@@ -4,12 +4,13 @@ import About from "./pages/About";
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-            </Routes>
-        </Router>
+        <div>Hello</div>
+        // <Router>
+        //     <Routes>
+        //         <Route path="/" element={<Home />} />
+        //         <Route path="/about" element={<About />} />
+        //     </Routes>
+        // </Router>
     );
 }
 
