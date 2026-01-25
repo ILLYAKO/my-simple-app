@@ -12,6 +12,7 @@
         "@types/node": "^16.18.126",
         "@types/react": "^19.2.9",
         "@types/react-dom": "^19.2.3",
+        "axios": "^1.13.2",
         "bootstrap": "^5.3.8",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
@@ -49,5 +50,5 @@
     "devDependencies": {
         "gh-pages": "^6.3.0"
     },
-    "homepage": "https://ILLYAKO.github.io/my-simple-app"
+    "homepage": "https://ILLYAKO.github.io/my-simple-app/"
 }
