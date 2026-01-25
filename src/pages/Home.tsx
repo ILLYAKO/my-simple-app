@@ -30,9 +30,7 @@ const Home = () => {
                         client_id: OAUTH_CONFIG.clientId,
                         code: code,
                         grant_type: "authorization_code",
-                        redirect_uri: encodeURIComponent(
-                            OAUTH_CONFIG.redirectUri,
-                        ),
+                        redirect_uri: OAUTH_CONFIG.redirectUri,
                     },
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded",
@@ -64,7 +62,7 @@ const Home = () => {
             `https://login.questrade.com/oauth2/authorize` +
             `?client_id=${OAUTH_CONFIG.clientId}` +
             `&response_type=code` +
-            `&redirect_uri=${encodeURIComponent(OAUTH_CONFIG.redirectUri)}`;
+            `&redirect_uri=${OAUTH_CONFIG.redirectUri}`;
     };
 
     return (
