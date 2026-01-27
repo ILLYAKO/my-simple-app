@@ -32,13 +32,7 @@ const Home = () => {
             const response = await axios.post(
                 "http://localhost:3000/exchange-token",
                 { code },
-                // {headers: {"Content-Type": "application/json",},},
             );
-
-            // console.log("Access token response:", response.data);
-            // console.log("-->access_token: ", response.data.access_token);
-            // console.log("-->refresh_token: ", response.data.refresh_token);
-
             if (response.data?.access_token && response.data?.refresh_token) {
                 setTokenData(response.data);
 
@@ -58,6 +52,9 @@ const Home = () => {
     };
 
     const fetchAccounts = async (accessToken: string) => {
+        console.log("fetchAccounts 0");
+        console.log("tokenData: ", tokenData);
+        console.log("tokenData.api_server", tokenData.api_server);
         try {
             const response = await axios.get(
                 // "https://api01.iq.questrade.com/v1/accounts", ///////////////////
