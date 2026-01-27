@@ -1,19 +1,20 @@
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { OAUTH_CONFIG } from "../config";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { OAUTH_CONFIG } from "../config";
 
 const Home = () => {
     const navigate = useNavigate();
 
-    const [tokenData, setTokenData] = useState<{
-        access_token?: string;
-        refresh_token?: string;
-        expires_in?: number;
-        api_server?: string;
-    } | null>(null);
-
+    // const [tokenData, setTokenData] = useState<{
+    //     access_token?: string;
+    //     refresh_token?: string;
+    //     expires_in?: number;
+    //     api_server?: string;
+    // } | null>(null);
+    // const [error, setError] = useState<string | null>(null);
+    const [tokenData, setTokenData] = useState<any>(null);
+    const [accounts, setAccounts] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -31,29 +32,48 @@ const Home = () => {
             const response = await axios.post(
                 "http://localhost:3000/exchange-token",
                 { code },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                },
+                // {headers: {"Content-Type": "application/json",},},
             );
 
-            console.log("Access token response:", response.data);
-            // ✅ Condition: must have both tokens
+            // console.log("Access token response:", response.data);
+            // console.log("-->access_token: ", response.data.access_token);
+            // console.log("-->refresh_token: ", response.data.refresh_token);
+
             if (response.data?.access_token && response.data?.refresh_token) {
                 setTokenData(response.data);
 
-                // clean URL (remove ?code=...)
                 window.history.replaceState(
                     {},
                     document.title,
                     "/my-simple-app/",
                 );
+
+                fetchAccounts(response.data.access_token);
             } else {
                 setError("Token response is missing required fields");
             }
         } catch (error) {
             console.error("Failed to exchange code for token:", error);
+        }
+    };
+
+    const fetchAccounts = async (accessToken: string) => {
+        try {
+            const response = await axios.get(
+                // "https://api01.iq.questrade.com/v1/accounts", ///////////////////
+                `${tokenData.api_server}v1/accounts`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+
+            console.log("Accounts response:", response.data);
+            setAccounts(response.data);
+        } catch (err) {
+            console.error("Failed to fetch accounts:", err);
+            setError("Failed to fetch accounts");
         }
     };
 
@@ -66,77 +86,30 @@ const Home = () => {
         window.location.href = url.toString();
     };
 
-    // return (
-    //     <div>
-    //         <h1>Home Page</h1>
-    //         <button
-    //             onClick={goToQuestradeLogin}
-    //             className="btn btn-primary m-2"
-    //         >
-    //             Login with Questrade
-    //         </button>
-    //         <button
-    //             onClick={() => navigate("/about")}
-    //             className="btn btn-secondary m-2"
-    //         >
-    //             Go to About Page
-    //         </button>
-    //         <Link to="/about" className="btn btn-success m-2">
-    //             Go to About
-    //         </Link>
-    //     </div>
-    // );
     return (
-        <div className="container mt-4">
+        <div>
             <h1>Home Page</h1>
 
-            <button
-                onClick={goToQuestradeLogin}
-                className="btn btn-primary m-2"
-            >
-                Login with Questrade
-            </button>
-
-            <button
-                onClick={() => navigate("/about")}
-                className="btn btn-secondary m-2"
-            >
-                Go to About Page
-            </button>
-
-            <Link to="/about" className="btn btn-success m-2">
-                Go to About
-            </Link>
+            <button onClick={goToQuestradeLogin}>Login with Questrade</button>
 
             {tokenData && (
-                <div className="mt-4 alert alert-success">
-                    <h4>OAuth Tokens</h4>
-
-                    <p>
-                        <strong>Access Token:</strong>
-                        <br />
-                        <code>{tokenData.access_token}</code>
-                    </p>
-
-                    <p>
-                        <strong>Refresh Token:</strong>
-                        <br />
-                        <code>{tokenData.refresh_token}</code>
-                    </p>
-
-                    <p>
-                        <strong>Expires In:</strong> {tokenData.expires_in}{" "}
-                        seconds
-                    </p>
-
-                    <p>
-                        <strong>API Server:</strong> {tokenData.api_server}
-                    </p>
+                <div>
+                    <h3>Access Token</h3>
+                    <pre>{tokenData.access_token}</pre>
                 </div>
             )}
 
-            {/* ❌ Error message */}
-            {error && <div className="alert alert-danger mt-3">{error}</div>}
+            {accounts && (
+                <div>
+                    <h3>Accounts</h3>
+                    <pre>{JSON.stringify(accounts, null, 2)}</pre>
+                </div>
+            )}
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <button onClick={() => navigate("/about")}>Go to About</button>
+            <Link to="/about">Go to About</Link>
         </div>
     );
 };
