@@ -6,16 +6,10 @@ import { OAUTH_CONFIG } from "../config";
 const Home = () => {
     const navigate = useNavigate();
 
-    // const [tokenData, setTokenData] = useState<{
-    //     access_token?: string;
-    //     refresh_token?: string;
-    //     expires_in?: number;
-    //     api_server?: string;
-    // } | null>(null);
-    // const [error, setError] = useState<string | null>(null);
     const [tokenData, setTokenData] = useState<any>(null);
     const [accounts, setAccounts] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
+    const [selectedAccount, setSelectedAccount] = useState<any>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -33,8 +27,11 @@ const Home = () => {
                 "http://localhost:3000/exchange-token",
                 { code },
             );
-            if (response.data?.access_token && response.data?.refresh_token) {
-                setTokenData(response.data);
+
+            const data = response.data;
+
+            if (data?.access_token && data?.refresh_token && data?.api_server) {
+                setTokenData(data);
 
                 window.history.replaceState(
                     {},
@@ -42,34 +39,29 @@ const Home = () => {
                     "/my-simple-app/",
                 );
 
-                fetchAccounts(response.data.access_token);
+                // ✅ pass api_server explicitly
+                fetchAccounts(data.access_token, data.api_server);
             } else {
                 setError("Token response is missing required fields");
             }
-        } catch (error) {
-            console.error("Failed to exchange code for token:", error);
+        } catch (err) {
+            console.error("Failed to exchange code for token:", err);
+            setError("Failed to exchange code for token");
         }
     };
 
-    const fetchAccounts = async (accessToken: string) => {
-        console.log("fetchAccounts 0");
-        console.log("tokenData: ", tokenData);
-        console.log("tokenData.api_server", tokenData.api_server);
+    const fetchAccounts = async (accessToken: string, apiServer: string) => {
         try {
-            const response = await axios.get(
-                // "https://api01.iq.questrade.com/v1/accounts", ///////////////////
-                `${tokenData.api_server}v1/accounts`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
+            const response = await axios.get("http://localhost:3000/accounts", {
+                params: {
+                    accessToken,
+                    apiServer,
                 },
-            );
-
+            });
             console.log("Accounts response:", response.data);
             setAccounts(response.data);
         } catch (err) {
-            console.error("Failed to fetch accounts:", err);
+            console.error(err);
             setError("Failed to fetch accounts");
         }
     };
@@ -88,25 +80,46 @@ const Home = () => {
             <h1>Home Page</h1>
 
             <button onClick={goToQuestradeLogin}>Login with Questrade</button>
+            <button onClick={() => navigate("/about")}>Go to About</button>
+            <Link to="/about">Go to About</Link>
 
-            {tokenData && (
-                <div>
-                    <h3>Access Token</h3>
-                    <pre>{tokenData.access_token}</pre>
-                </div>
-            )}
+            {accounts?.accounts && (
+                <div className="dropdown">
+                    <button
+                        className="btn btn-primary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+                        {selectedAccount
+                            ? `${selectedAccount.type} — ${selectedAccount.number}`
+                            : "Select account"}
+                    </button>
 
-            {accounts && (
-                <div>
-                    <h3>Accounts</h3>
-                    <pre>{JSON.stringify(accounts, null, 2)}</pre>
+                    <ul className="dropdown-menu">
+                        {accounts.accounts.map((acc: any) => (
+                            <li key={acc.number}>
+                                <button
+                                    className="dropdown-item d-flex justify-content-between align-items-center"
+                                    onClick={() => setSelectedAccount(acc)}
+                                >
+                                    <span>
+                                        {acc.type} — {acc.number}
+                                    </span>
+
+                                    {acc.isPrimary && (
+                                        <span className="badge bg-success ms-2">
+                                            Primary
+                                        </span>
+                                    )}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
 
             {error && <p style={{ color: "red" }}>{error}</p>}
-
-            <button onClick={() => navigate("/about")}>Go to About</button>
-            <Link to="/about">Go to About</Link>
         </div>
     );
 };
