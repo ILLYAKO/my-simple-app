@@ -5,26 +5,41 @@ import { OAUTH_CONFIG } from "../config";
 
 const Home = () => {
     const navigate = useNavigate();
+    const backUrl = "http://localhost:3000";
 
     const [tokenData, setTokenData] = useState<any>(null);
     const [accounts, setAccounts] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<any>(null);
+    const [questradeTime, setQuestradeTime] = useState<any>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
 
-        if (code) {
+        // if (code) {
+        //     console.log("OAuth code received:", code);
+        //     exchangeCodeForToken(code);
+        //     fetchTime();
+        //     fetchAccounts();
+        // }
+        if (!code) return;
+        const run = async () => {
             console.log("OAuth code received:", code);
-            exchangeCodeForToken(code);
-        }
+
+            await exchangeCodeForToken(code);
+            await fetchTime();
+            await fetchAccounts();
+        };
+
+        run();
     }, []);
 
     const exchangeCodeForToken = async (code: string) => {
         try {
             const response = await axios.post(
-                "http://localhost:3000/exchange-token",
+                //"http://localhost:3000/exchange-token",
+                `${backUrl}/exchange-token`,
                 { code },
             );
 
@@ -39,8 +54,8 @@ const Home = () => {
                     "/my-simple-app/",
                 );
 
-                // ✅ pass api_server explicitly
-                fetchAccounts(data.access_token, data.api_server);
+                // fetchTime(data.access_token, data.api_server);
+                // fetchAccounts(data.access_token, data.api_server);
             } else {
                 setError("Token response is missing required fields");
             }
@@ -50,16 +65,60 @@ const Home = () => {
         }
     };
 
-    const fetchAccounts = async (accessToken: string, apiServer: string) => {
+    const fetchAccounts = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/accounts", {
-                params: {
-                    accessToken,
-                    apiServer,
+            const response = await axios.get(
+                // "http://localhost:3000/accounts",
+                `${backUrl}/accounts`,
+                {
+                    // params: {
+                    //     accessToken,
+                    //     apiServer,
+                    // },
                 },
-            });
+            );
             console.log("Accounts response:", response.data);
             setAccounts(response.data);
+        } catch (err) {
+            console.error(err);
+            setError("Failed to fetch accounts");
+        }
+    };
+    const fetchTime = async () => {
+        try {
+            const response = await axios.get(
+                // "http://localhost:3000/time",
+                `${backUrl}/time`,
+                {
+                    // params: {
+                    //     accessToken,
+                    //     apiServer,
+                    // },
+                },
+            );
+            console.log("Time response:", response.data);
+            setQuestradeTime(response.data);
+        } catch (err) {
+            console.error(err);
+            setError("Failed to fetch accounts");
+        }
+    };
+    const fetchAccountActivities = async (tokenData: any) => {
+        // GET https://api01.iq.questrade.com/v1/accounts/26598145/activities?startTime=2011-02-01T00:00:00-05:00&endTime=2011-02-28T00:00:00-05:00&
+
+        try {
+            const response = await axios.get(
+                // "http://localhost:3000/time",
+                `${backUrl}/activities`,
+                {
+                    // params: {
+                    //     tokenData.access_token,
+                    //     tokenData.api_server,
+                    // },
+                },
+            );
+            console.log("Time response:", response.data);
+            setQuestradeTime(response.data);
         } catch (err) {
             console.error(err);
             setError("Failed to fetch accounts");
@@ -75,14 +134,18 @@ const Home = () => {
         window.location.href = url.toString();
     };
 
+    const selectAccount = (account: any) => {
+        setSelectedAccount(account);
+    };
+
     return (
         <div>
             <h1>Home Page</h1>
+            {questradeTime && <div>{questradeTime.time}</div>}
 
             <button onClick={goToQuestradeLogin}>Login with Questrade</button>
             <button onClick={() => navigate("/about")}>Go to About</button>
             <Link to="/about">Go to About</Link>
-
             {accounts?.accounts && (
                 <div className="dropdown">
                     <button
@@ -101,7 +164,8 @@ const Home = () => {
                             <li key={acc.number}>
                                 <button
                                     className="dropdown-item d-flex justify-content-between align-items-center"
-                                    onClick={() => setSelectedAccount(acc)}
+                                    // onClick={() => setSelectedAccount(acc)}
+                                    onClick={selectAccount}
                                 >
                                     <span>
                                         {acc.type} — {acc.number}
@@ -118,6 +182,7 @@ const Home = () => {
                     </ul>
                 </div>
             )}
+            {selectedAccount && <div>{selectedAccount}</div>}
 
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
