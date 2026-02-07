@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import LoginButton from "./LoginButton";
+import { useAccounts } from "../context/AccountsContext";
 
 const Navbar = () => {
+    const { accounts } = useAccounts();
+    const noAccounts =
+        !accounts || (Array.isArray(accounts) && accounts.length === 0);
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
@@ -103,7 +107,7 @@ const Navbar = () => {
                             Search
                         </button>
                     </form>
-                    <LoginButton />
+                    {noAccounts ? <LoginButton /> : <p>Logged in ✅</p>}
                 </div>
             </div>
         </nav>
