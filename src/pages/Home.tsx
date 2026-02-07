@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { OAUTH_CONFIG } from "../config";
 import LoginButton from "../components/LoginButton";
+import Navtabs from "../components/Navtabs";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -91,15 +92,6 @@ const Home = () => {
         }
     };
 
-    const goToQuestradeLogin = () => {
-        const url = new URL("https://login.questrade.com/oauth2/authorize");
-        url.searchParams.append("client_id", OAUTH_CONFIG.clientId);
-        url.searchParams.append("response_type", "code");
-        url.searchParams.append("redirect_uri", OAUTH_CONFIG.redirectUri);
-
-        window.location.href = url.toString();
-    };
-
     const selectAccount = (account: any) => {
         console.log("Selected account: ", account);
         setSelectedAccount(account);
@@ -111,11 +103,6 @@ const Home = () => {
             <h1>Home Page</h1>
             {questradeTime && <div>{questradeTime.time}</div>}
 
-            <LoginButton />
-
-            <button onClick={goToQuestradeLogin}>Login with Questrade</button>
-            <button onClick={() => navigate("/about")}>Go to About</button>
-            <Link to="/about">Go to About</Link>
             {accounts?.accounts && (
                 <div className="dropdown">
                     <button
@@ -163,6 +150,7 @@ const Home = () => {
                     {JSON.stringify(accountOrders, null, 2)}
                 </pre>
             )}
+            <Navtabs />
 
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
