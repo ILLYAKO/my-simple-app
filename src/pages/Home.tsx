@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { OAUTH_CONFIG } from "../config";
+import LoginButton from "../components/LoginButton";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -11,18 +12,13 @@ const Home = () => {
     const [accounts, setAccounts] = useState<any>(null);
     const [error, setError] = useState<string | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<any>(null);
+    const [accountOrders, setAccountOrders] = useState<any>(null);
     const [questradeTime, setQuestradeTime] = useState<any>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
 
-        // if (code) {
-        //     console.log("OAuth code received:", code);
-        //     exchangeCodeForToken(code);
-        //     fetchTime();
-        //     fetchAccounts();
-        // }
         if (!code) return;
         const run = async () => {
             console.log("OAuth code received:", code);
@@ -37,11 +33,9 @@ const Home = () => {
 
     const exchangeCodeForToken = async (code: string) => {
         try {
-            const response = await axios.post(
-                //"http://localhost:3000/exchange-token",
-                `${backUrl}/exchange-token`,
-                { code },
-            );
+            const response = await axios.post(`${backUrl}/exchange-token`, {
+                code,
+            });
 
             const data = response.data;
 
@@ -53,9 +47,6 @@ const Home = () => {
                     document.title,
                     "/my-simple-app/",
                 );
-
-                // fetchTime(data.access_token, data.api_server);
-                // fetchAccounts(data.access_token, data.api_server);
             } else {
                 setError("Token response is missing required fields");
             }
@@ -67,16 +58,7 @@ const Home = () => {
 
     const fetchAccounts = async () => {
         try {
-            const response = await axios.get(
-                // "http://localhost:3000/accounts",
-                `${backUrl}/accounts`,
-                {
-                    // params: {
-                    //     accessToken,
-                    //     apiServer,
-                    // },
-                },
-            );
+            const response = await axios.get(`${backUrl}/accounts`);
             console.log("Accounts response:", response.data);
             setAccounts(response.data);
         } catch (err) {
@@ -86,16 +68,7 @@ const Home = () => {
     };
     const fetchTime = async () => {
         try {
-            const response = await axios.get(
-                // "http://localhost:3000/time",
-                `${backUrl}/time`,
-                {
-                    // params: {
-                    //     accessToken,
-                    //     apiServer,
-                    // },
-                },
-            );
+            const response = await axios.get(`${backUrl}/time`);
             console.log("Time response:", response.data);
             setQuestradeTime(response.data);
         } catch (err) {
@@ -103,22 +76,15 @@ const Home = () => {
             setError("Failed to fetch accounts");
         }
     };
-    const fetchAccountActivities = async (tokenData: any) => {
-        // GET https://api01.iq.questrade.com/v1/accounts/26598145/activities?startTime=2011-02-01T00:00:00-05:00&endTime=2011-02-28T00:00:00-05:00&
-
+    const fetchAccountOrders = async (accountNumber: any) => {
+        console.log("fetchAccountOrders accountNumber", accountNumber);
+        console.log("fetchAccountOrders selectedAccount", selectedAccount);
         try {
             const response = await axios.get(
-                // "http://localhost:3000/time",
-                `${backUrl}/activities`,
-                {
-                    // params: {
-                    //     tokenData.access_token,
-                    //     tokenData.api_server,
-                    // },
-                },
+                `${backUrl}/accounts/${accountNumber}/orders`,
             );
-            console.log("Time response:", response.data);
-            setQuestradeTime(response.data);
+            console.log("Accounts Orders response:", response.data);
+            setAccountOrders(response.data);
         } catch (err) {
             console.error(err);
             setError("Failed to fetch accounts");
@@ -135,13 +101,17 @@ const Home = () => {
     };
 
     const selectAccount = (account: any) => {
+        console.log("Selected account: ", account);
         setSelectedAccount(account);
+        fetchAccountOrders(account.number);
     };
 
     return (
         <div>
             <h1>Home Page</h1>
             {questradeTime && <div>{questradeTime.time}</div>}
+
+            <LoginButton />
 
             <button onClick={goToQuestradeLogin}>Login with Questrade</button>
             <button onClick={() => navigate("/about")}>Go to About</button>
@@ -164,8 +134,7 @@ const Home = () => {
                             <li key={acc.number}>
                                 <button
                                     className="dropdown-item d-flex justify-content-between align-items-center"
-                                    // onClick={() => setSelectedAccount(acc)}
-                                    onClick={selectAccount}
+                                    onClick={() => selectAccount(acc)}
                                 >
                                     <span>
                                         {acc.type} — {acc.number}
@@ -182,7 +151,18 @@ const Home = () => {
                     </ul>
                 </div>
             )}
-            {selectedAccount && <div>{selectedAccount}</div>}
+
+            {selectedAccount && (
+                <pre className="mt-3">
+                    {JSON.stringify(selectedAccount, null, 2)}
+                </pre>
+            )}
+
+            {accountOrders && (
+                <pre className="mt-3">
+                    {JSON.stringify(accountOrders, null, 2)}
+                </pre>
+            )}
 
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
