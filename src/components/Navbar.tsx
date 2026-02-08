@@ -107,7 +107,7 @@ const Navbar = () => {
                             Search
                         </button>
                     </form>
-                    {noAccounts ? <LoginButton /> : <p>Logged in ✅</p>}
+                    {noAccounts ? <LoginButton /> : <p>Logged in</p>}
                 </div>
             </div>
         </nav>

@@ -17,7 +17,8 @@ const Home = () => {
     const [error, setError] = useState<string | null>(null);
     const [selectedAccount, setSelectedAccount] = useState<any>(null);
     const [accountOrders, setAccountOrders] = useState<any>(null);
-    const [questradeTime, setQuestradeTime] = useState<any>(null);
+    const [accountBalances, setAccountBalances] = useState<any>(null);
+    // const [questradeTime, setQuestradeTime] = useState<any>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -28,12 +29,19 @@ const Home = () => {
             console.log("OAuth code received:", code);
 
             await exchangeCodeForToken(code);
-            await fetchTime();
+            // await fetchTime();
             await fetchAccounts();
         };
 
         run();
     }, []);
+
+    useEffect(() => {
+        if (accounts?.accounts?.length > 0 && !selectedAccount) {
+            setSelectedAccount(accounts.accounts[0]);
+            fetchAccountBalances(accounts.accounts[0].number);
+        }
+    }, [accounts, selectedAccount]);
 
     const exchangeCodeForToken = async (code: string) => {
         try {
@@ -59,7 +67,6 @@ const Home = () => {
             setError("Failed to exchange code for token");
         }
     };
-
     const fetchAccounts = async () => {
         try {
             const response = await axios.get(`${backUrl}/accounts`);
@@ -71,16 +78,16 @@ const Home = () => {
             setAccounts(null);
         }
     };
-    const fetchTime = async () => {
-        try {
-            const response = await axios.get(`${backUrl}/time`);
-            console.log("Time response:", response.data);
-            setQuestradeTime(response.data);
-        } catch (err) {
-            console.error(err);
-            setError("Failed to fetch accounts");
-        }
-    };
+    // const fetchTime = async () => {
+    //     try {
+    //         const response = await axios.get(`${backUrl}/time`);
+    //         console.log("Time response:", response.data);
+    //         setQuestradeTime(response.data);
+    //     } catch (err) {
+    //         console.error(err);
+    //         setError("Failed to fetch accounts");
+    //     }
+    // };
     const fetchAccountOrders = async (accountNumber: any) => {
         console.log("fetchAccountOrders accountNumber", accountNumber);
         console.log("fetchAccountOrders selectedAccount", selectedAccount);
@@ -92,20 +99,35 @@ const Home = () => {
             setAccountOrders(response.data);
         } catch (err) {
             console.error(err);
-            setError("Failed to fetch accounts");
+            setError("Failed to fetch accounts orders");
+        }
+    };
+    const fetchAccountBalances = async (accountNumber: any) => {
+        console.log("fetchAccountBalances accountNumber", accountNumber);
+        console.log("fetchAccountBalances selectedAccount", selectedAccount);
+        try {
+            const response = await axios.get(
+                `${backUrl}/accounts/${accountNumber}/balances`,
+            );
+            console.log("Accounts Balances response:", response.data);
+            setAccountBalances(response.data);
+        } catch (err) {
+            console.error(err);
+            setError("Failed to fetch accounts balances");
         }
     };
 
     const selectAccount = (account: any) => {
         console.log("Selected account: ", account);
         setSelectedAccount(account);
-        fetchAccountOrders(account.number);
+        // fetchAccountOrders(account.number);
+        fetchAccountBalances(account.number);
     };
 
     return (
         <div>
             <h1>Home Page</h1>
-            {questradeTime && <div>{questradeTime.time}</div>}
+            {/* {questradeTime && <div>{questradeTime.time}</div>} */}
 
             {/* {!accounts ? (
                 <p>No accounts loaded yet...</p>
@@ -121,9 +143,8 @@ const Home = () => {
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                     >
-                        {selectedAccount
-                            ? `${selectedAccount.type} — ${selectedAccount.number}`
-                            : "Select account"}
+                        {/* {selectedAccount ? `${selectedAccount.type} — ${selectedAccount.number}` : "Select account"} */}
+                        {selectedAccount?.type} — {selectedAccount?.number}
                     </button>
 
                     <ul className="dropdown-menu">
@@ -160,7 +181,8 @@ const Home = () => {
                     {JSON.stringify(accountOrders, null, 2)}
                 </pre>
             )}
-            <Navtabs />
+
+            <Navtabs balances={accountBalances} />
 
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>

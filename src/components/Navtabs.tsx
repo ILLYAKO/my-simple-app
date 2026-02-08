@@ -1,43 +1,67 @@
-const Navtabs = () => {
+const Navtabs = ({ balances }: { balances: any }) => {
     return (
         <>
             <nav>
                 <div className="nav nav-tabs" id="nav-tab" role="tablist">
                     <button
                         className="nav-link active"
-                        id="nav-home-tab"
+                        id="nav-balances-tab"
                         data-bs-toggle="tab"
-                        data-bs-target="#nav-home"
+                        data-bs-target="#nav-balances"
                         type="button"
                         role="tab"
-                        aria-controls="nav-home"
+                        aria-controls="nav-balances"
                         aria-selected="true"
                     >
-                        Home
+                        Balances
                     </button>
                     <button
                         className="nav-link"
-                        id="nav-profile-tab"
+                        id="nav-positions-tab"
                         data-bs-toggle="tab"
-                        data-bs-target="#nav-profile"
+                        data-bs-target="#nav-positions"
                         type="button"
                         role="tab"
-                        aria-controls="nav-profile"
+                        aria-controls="nav-positions"
                         aria-selected="false"
                     >
-                        Profile
+                        Positions
                     </button>
                     <button
                         className="nav-link"
-                        id="nav-contact-tab"
+                        id="nav-orders-tab"
                         data-bs-toggle="tab"
-                        data-bs-target="#nav-contact"
+                        data-bs-target="#nav-orders"
                         type="button"
                         role="tab"
-                        aria-controls="nav-contact"
+                        aria-controls="nav-orders"
                         aria-selected="false"
                     >
-                        Contact
+                        Orders
+                    </button>
+                    <button
+                        className="nav-link"
+                        id="nav-executions-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-executions"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-executions"
+                        aria-selected="false"
+                    >
+                        Executions
+                    </button>
+                    <button
+                        className="nav-link"
+                        id="nav-activities-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-activities"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-activities"
+                        aria-selected="false"
+                    >
+                        Activities
                     </button>
                     <button
                         className="nav-link"
@@ -57,30 +81,53 @@ const Navtabs = () => {
             <div className="tab-content" id="nav-tabContent">
                 <div
                     className="tab-pane fade show active"
-                    id="nav-home"
+                    id="nav-balances"
                     role="tabpanel"
-                    aria-labelledby="nav-home-tab"
+                    aria-labelledby="nav-balances-tab"
                     tabIndex={0}
                 >
-                    Home
+                    {/* Balances */}
+                    {!balances ? (
+                        <p>No balances loaded yet...</p>
+                    ) : (
+                        <pre>{JSON.stringify(balances, null, 2)}</pre>
+                    )}
                 </div>
                 <div
                     className="tab-pane fade"
-                    id="nav-profile"
+                    id="nav-positions"
                     role="tabpanel"
-                    aria-labelledby="nav-profile-tab"
+                    aria-labelledby="nav-positions-tab"
                     tabIndex={0}
                 >
-                    Profile
+                    Positions
                 </div>
                 <div
                     className="tab-pane fade"
-                    id="nav-contact"
+                    id="nav-orders"
                     role="tabpanel"
-                    aria-labelledby="nav-contact-tab"
+                    aria-labelledby="nav-orders-tab"
                     tabIndex={0}
                 >
-                    Contact
+                    Orders
+                </div>
+                <div
+                    className="tab-pane fade"
+                    id="nav-executions"
+                    role="tabpanel"
+                    aria-labelledby="nav-executions-tab"
+                    tabIndex={0}
+                >
+                    Executions
+                </div>
+                <div
+                    className="tab-pane fade"
+                    id="nav-activities"
+                    role="tabpanel"
+                    aria-labelledby="nav-activities-tab"
+                    tabIndex={0}
+                >
+                    Activities
                 </div>
                 <div
                     className="tab-pane fade"
