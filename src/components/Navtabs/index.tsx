@@ -1,4 +1,37 @@
-const Navtabs = ({ balances }: { balances: any }) => {
+import { useState } from "react";
+import Activities from "./Activities";
+import Balances from "./Balances";
+import Executions from "./Executions";
+import Orders from "./Orders";
+import Positions from "./Positions";
+
+type Props = {
+    balances: any;
+    loading: boolean;
+    fetchBalances: () => void;
+    positions: any;
+    fetchPositions: () => void;
+    orders: any;
+    fetchOrders: () => void;
+    executions: any;
+    fetchExecutions: () => void;
+    activities: any;
+    fetchActivities: () => void;
+};
+
+const Navtabs = ({
+    loading,
+    balances,
+    fetchBalances,
+    positions,
+    fetchPositions,
+    orders,
+    fetchOrders,
+    executions,
+    fetchExecutions,
+    activities,
+    fetchActivities,
+}: Props) => {
     return (
         <>
             <nav>
@@ -12,6 +45,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         role="tab"
                         aria-controls="nav-balances"
                         aria-selected="true"
+                        onClick={fetchBalances}
                     >
                         Balances
                     </button>
@@ -24,6 +58,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         role="tab"
                         aria-controls="nav-positions"
                         aria-selected="false"
+                        onClick={fetchPositions}
                     >
                         Positions
                     </button>
@@ -36,6 +71,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         role="tab"
                         aria-controls="nav-orders"
                         aria-selected="false"
+                        onClick={fetchOrders}
                     >
                         Orders
                     </button>
@@ -48,6 +84,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         role="tab"
                         aria-controls="nav-executions"
                         aria-selected="false"
+                        onClick={fetchExecutions}
                     >
                         Executions
                     </button>
@@ -60,10 +97,11 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         role="tab"
                         aria-controls="nav-activities"
                         aria-selected="false"
+                        onClick={fetchActivities}
                     >
                         Activities
                     </button>
-                    <button
+                    {/* <button
                         className="nav-link"
                         id="nav-disabled-tab"
                         data-bs-toggle="tab"
@@ -75,7 +113,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                         disabled
                     >
                         Disabled
-                    </button>
+                    </button> */}
                 </div>
             </nav>
             <div className="tab-content" id="nav-tabContent">
@@ -86,11 +124,12 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     aria-labelledby="nav-balances-tab"
                     tabIndex={0}
                 >
-                    {/* Balances */}
-                    {!balances ? (
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : !balances ? (
                         <p>No balances loaded yet...</p>
                     ) : (
-                        <pre>{JSON.stringify(balances, null, 2)}</pre>
+                        <Balances balances={balances} />
                     )}
                 </div>
                 <div
@@ -100,7 +139,13 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     aria-labelledby="nav-positions-tab"
                     tabIndex={0}
                 >
-                    Positions
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : !positions ? (
+                        <p>No positions loaded yet...</p>
+                    ) : (
+                        <Positions positions={positions}></Positions>
+                    )}
                 </div>
                 <div
                     className="tab-pane fade"
@@ -109,7 +154,13 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     aria-labelledby="nav-orders-tab"
                     tabIndex={0}
                 >
-                    Orders
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : !orders ? (
+                        <p>No orders loaded yet...</p>
+                    ) : (
+                        <Orders orders={orders}></Orders>
+                    )}
                 </div>
                 <div
                     className="tab-pane fade"
@@ -118,7 +169,13 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     aria-labelledby="nav-executions-tab"
                     tabIndex={0}
                 >
-                    Executions
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : !executions ? (
+                        <p>No executions loaded yet...</p>
+                    ) : (
+                        <Executions executions={executions}></Executions>
+                    )}
                 </div>
                 <div
                     className="tab-pane fade"
@@ -127,9 +184,15 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     aria-labelledby="nav-activities-tab"
                     tabIndex={0}
                 >
-                    Activities
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : !activities ? (
+                        <p>No activities loaded yet...</p>
+                    ) : (
+                        <Activities activities={activities}></Activities>
+                    )}
                 </div>
-                <div
+                {/* <div
                     className="tab-pane fade"
                     id="nav-disabled"
                     role="tabpanel"
@@ -137,7 +200,7 @@ const Navtabs = ({ balances }: { balances: any }) => {
                     tabIndex={0}
                 >
                     Disabled
-                </div>
+                </div> */}
             </div>
         </>
     );
