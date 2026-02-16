@@ -1,19 +1,17 @@
-import BalanceTable from "./BalanceTable";
+import ActivitiesTable from "./ActivitiesTable";
 
 const Activities = ({ activities }: { activities: any }) => {
-    const positionsGroups = Object.keys(activities);
+    // const positionsGroups = Object.keys(activities);
     return (
         <div>
-            {activities?.length > 0 ? "Activities" : "No Activities"}
-            <pre className="mt-3">{JSON.stringify(activities, null, 2)}</pre>
-            {/* {balanceGroups.map((balanceGroup: any) => (
-                <div>
-                    <h2>{balanceGroup}</h2>
-                    <BalanceTable
-                        unitBalances={balances[balanceGroup]}
-                    ></BalanceTable>
-                </div>
-            ))} */}
+            {activities.activities?.length > 0 ? "Activities" : "No Activities"}
+            {/* <pre className="mt-3">{JSON.stringify(activities, null, 2)}</pre> */}
+
+            <div>
+                <ActivitiesTable
+                    activities={activities.activities}
+                ></ActivitiesTable>
+            </div>
         </div>
     );
 };

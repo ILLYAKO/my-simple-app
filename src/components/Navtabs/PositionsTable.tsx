@@ -1,13 +1,3 @@
-// type Balance = {
-//     currency: string;
-//     cash: number;
-//     marketValue: number;
-//     totalEquity: number;
-//     buyingPower: number;
-//     maintenanceExcess: number;
-//     isRealTime: boolean;
-// };
-
 type Position = {
     symbol: string;
     symbolId: number;
@@ -49,22 +39,15 @@ const PositionsTable = ({ positions }: Props) => {
         <table className="table table-striped">
             <thead>
                 <tr>
-                    {/* <th>Field</th>
-                    <th>CAD</th>
-                    <th>USD</th> */}
                     {positionFields.map((positionField) => (
                         <th key={positionField}>{positionField}</th>
                     ))}
                 </tr>
             </thead>
-
             <tbody>
                 {positions.map((position, index) => (
                     <tr key={index}>
                         {positionFields.map((field) => (
-                            // <td key={field}>
-                            //     {position[field as keyof typeof position]}
-                            // </td>
                             <td>
                                 {field === "isRealTime" ||
                                 field === "isUnderReorg"
@@ -78,25 +61,6 @@ const PositionsTable = ({ positions }: Props) => {
                         ))}
                     </tr>
                 ))}
-                {/* {fields.map((field) => (
-                    <tr key={field}>
-                        <td>
-                            <strong>{field}</strong>
-                        </td>
-                        <td>
-                            {field === "isRealTime" 
-                            ? cad?.[field] ? "✅" : "❌" 
-                            : (cad?.[field] ?? "-")}
-                        </td>
-                        <td>
-                            {field === "isRealTime"
-                                ? usd?.[field]
-                                    ? "✅"
-                                    : "❌"
-                                : (usd?.[field] ?? "-")}
-                        </td>
-                    </tr>
-                ))} */}
             </tbody>
         </table>
     );
