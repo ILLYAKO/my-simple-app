@@ -6,8 +6,10 @@ import Orders from "./Orders";
 import Positions from "./Positions";
 
 type Props = {
-    balances: any;
     loading: boolean;
+    activeTab: string;
+    setActiveTab: (tab: string) => void;
+    balances: any;
     fetchBalances: () => void;
     positions: any;
     fetchPositions: () => void;
@@ -21,6 +23,8 @@ type Props = {
 
 const Navtabs = ({
     loading,
+    activeTab,
+    setActiveTab,
     balances,
     fetchBalances,
     positions,
@@ -37,7 +41,7 @@ const Navtabs = ({
             <nav>
                 <div className="nav nav-tabs" id="nav-tab" role="tablist">
                     <button
-                        className="nav-link active"
+                        className={`nav-link ${activeTab === "balances" ? "active" : ""}`}
                         id="nav-balances-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#nav-balances"
@@ -45,12 +49,15 @@ const Navtabs = ({
                         role="tab"
                         aria-controls="nav-balances"
                         aria-selected="true"
-                        onClick={fetchBalances}
+                        onClick={() => {
+                            setActiveTab("balances");
+                            fetchBalances();
+                        }}
                     >
                         Balances
                     </button>
                     <button
-                        className="nav-link"
+                        className={`nav-link ${activeTab === "positions" ? "active" : ""}`}
                         id="nav-positions-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#nav-positions"
@@ -58,12 +65,15 @@ const Navtabs = ({
                         role="tab"
                         aria-controls="nav-positions"
                         aria-selected="false"
-                        onClick={fetchPositions}
+                        onClick={() => {
+                            setActiveTab("positions");
+                            fetchPositions();
+                        }}
                     >
                         Positions
                     </button>
                     <button
-                        className="nav-link"
+                        className={`nav-link ${activeTab === "orders" ? "active" : ""}`}
                         id="nav-orders-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#nav-orders"
@@ -71,12 +81,15 @@ const Navtabs = ({
                         role="tab"
                         aria-controls="nav-orders"
                         aria-selected="false"
-                        onClick={fetchOrders}
+                        onClick={() => {
+                            setActiveTab("orders");
+                            fetchOrders();
+                        }}
                     >
                         Orders
                     </button>
                     <button
-                        className="nav-link"
+                        className={`nav-link ${activeTab === "executions" ? "active" : ""}`}
                         id="nav-executions-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#nav-executions"
@@ -84,12 +97,15 @@ const Navtabs = ({
                         role="tab"
                         aria-controls="nav-executions"
                         aria-selected="false"
-                        onClick={fetchExecutions}
+                        onClick={() => {
+                            setActiveTab("executions");
+                            fetchExecutions();
+                        }}
                     >
                         Executions
                     </button>
                     <button
-                        className="nav-link"
+                        className={`nav-link ${activeTab === "activities" ? "active" : ""}`}
                         id="nav-activities-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#nav-activities"
@@ -97,7 +113,10 @@ const Navtabs = ({
                         role="tab"
                         aria-controls="nav-activities"
                         aria-selected="false"
-                        onClick={fetchActivities}
+                        onClick={() => {
+                            setActiveTab("activities");
+                            fetchActivities();
+                        }}
                     >
                         Activities
                     </button>
@@ -118,7 +137,7 @@ const Navtabs = ({
             </nav>
             <div className="tab-content" id="nav-tabContent">
                 <div
-                    className="tab-pane fade show active"
+                    className={`tab-pane fade ${activeTab === "balances" ? "show active" : ""}`}
                     id="nav-balances"
                     role="tabpanel"
                     aria-labelledby="nav-balances-tab"
@@ -133,7 +152,7 @@ const Navtabs = ({
                     )}
                 </div>
                 <div
-                    className="tab-pane fade"
+                    className={`tab-pane fade ${activeTab === "positions" ? "show active" : ""}`}
                     id="nav-positions"
                     role="tabpanel"
                     aria-labelledby="nav-positions-tab"
@@ -148,7 +167,7 @@ const Navtabs = ({
                     )}
                 </div>
                 <div
-                    className="tab-pane fade"
+                    className={`tab-pane fade ${activeTab === "orders" ? "show active" : ""}`}
                     id="nav-orders"
                     role="tabpanel"
                     aria-labelledby="nav-orders-tab"
@@ -163,7 +182,7 @@ const Navtabs = ({
                     )}
                 </div>
                 <div
-                    className="tab-pane fade"
+                    className={`tab-pane fade ${activeTab === "executions" ? "show active" : ""}`}
                     id="nav-executions"
                     role="tabpanel"
                     aria-labelledby="nav-executions-tab"
@@ -178,7 +197,7 @@ const Navtabs = ({
                     )}
                 </div>
                 <div
-                    className="tab-pane fade"
+                    className={`tab-pane fade ${activeTab === "activities" ? "show active" : ""}`}
                     id="nav-activities"
                     role="tabpanel"
                     aria-labelledby="nav-activities-tab"

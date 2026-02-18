@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import LoginButton from "./LoginButton";
 import { useAccounts } from "../context/AccountsContext";
+import { useIsAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-    const { accounts } = useAccounts();
-    const noAccounts =
-        !accounts || (Array.isArray(accounts) && accounts.length === 0);
+    const { isAuth } = useIsAuth();
+    console.log("Navbar isAuth", isAuth);
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
@@ -38,10 +38,21 @@ const Navbar = () => {
                             </Link>
                         </li>
                         <li className="nav-item">
+                            <Link className="nav-link" to="/accounts">
+                                Accounts
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/about">
+                                About
+                            </Link>
+                        </li>
+                        <li className="nav-item">
                             <Link className="nav-link" to="/">
                                 Link
                             </Link>
                         </li>
+
                         <li className="nav-item dropdown">
                             <a
                                 className="nav-link dropdown-toggle"
@@ -107,7 +118,7 @@ const Navbar = () => {
                             Search
                         </button>
                     </form>
-                    {noAccounts ? <LoginButton /> : <p>Logged in</p>}
+                    {!isAuth ? <LoginButton /> : <p>Logged in</p>}
                 </div>
             </div>
         </nav>

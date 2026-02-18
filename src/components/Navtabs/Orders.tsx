@@ -1,7 +1,6 @@
 import OrdersTable from "./OrdersTable";
 
 const Orders = ({ orders }: { orders: any }) => {
-    // const positionsGroups = Object.keys(orders);
     console.log("orders in the Order element:", orders);
     return (
         <div>

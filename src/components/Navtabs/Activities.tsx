@@ -1,7 +1,6 @@
 import ActivitiesTable from "./ActivitiesTable";
 
 const Activities = ({ activities }: { activities: any }) => {
-    // const positionsGroups = Object.keys(activities);
     return (
         <div>
             {activities.activities?.length > 0 ? "Activities" : "No Activities"}
