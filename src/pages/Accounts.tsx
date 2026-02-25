@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Navtabs from "../components/Navtabs";
+import AccountsTabs from "../components/AccountsTabs";
+import AccountDropdown from "../components/AccountsDropdown";
 import { OAUTH_CONFIG } from "../config";
-import { useIsAuth } from "../context/AuthContext";
+// import { useIsAuth } from "../context/AuthContext";
 
 const Accounts = () => {
-    const { isAuth } = useIsAuth();
+    // const { isAuth } = useIsAuth();
     const [accounts, setAccounts] = useState<any>(null);
     const [selectedAccount, setSelectedAccount] = useState<any>(null);
     const [accountBalances, setAccountBalances] = useState<any>(null);
@@ -34,7 +35,7 @@ const Accounts = () => {
         try {
             setLoading(true);
             const response = await api.get("/accounts");
-            console.log("Accounts response:", response.data);
+            // console.log("Accounts response:", response.data);
             const data = response.data;
             setAccounts(response.data);
             return data;
@@ -147,57 +148,62 @@ const Accounts = () => {
 
     return (
         <div>
-            <h1>Accounts: </h1>
+            <h1>Accounts1: </h1>
 
             {accounts?.accounts && (
-                <div className="dropdown">
-                    <button
-                        className="btn btn-primary dropdown-toggle"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                    >
-                        {selectedAccount
-                            ? `${selectedAccount.type} — ${selectedAccount.number}`
-                            : "Select account"}
-                    </button>
+                <AccountDropdown
+                    accounts={accounts}
+                    selectedAccount={selectedAccount}
+                    selectAccount={selectAccount}
+                />
+                // <div className="dropdown">
+                //     <button
+                //         className="btn btn-primary dropdown-toggle"
+                //         type="button"
+                //         data-bs-toggle="dropdown"
+                //         aria-expanded="false"
+                //     >
+                //         {selectedAccount
+                //             ? `${selectedAccount.type} — ${selectedAccount.number}`
+                //             : "Select account"}
+                //     </button>
 
-                    <ul className="dropdown-menu">
-                        <li>
-                            <button
-                                className="dropdown-item text-muted"
-                                disabled
-                            >
-                                Select account
-                            </button>
-                        </li>
+                //     <ul className="dropdown-menu">
+                //         <li>
+                //             <button
+                //                 className="dropdown-item text-muted"
+                //                 disabled
+                //             >
+                //                 Select account
+                //             </button>
+                //         </li>
 
-                        <li>
-                            <hr className="dropdown-divider" />
-                        </li>
-                        {accounts.accounts.map((acc: any) => (
-                            <li key={acc.number}>
-                                <button
-                                    className="dropdown-item d-flex justify-content-between align-items-center"
-                                    onClick={() => selectAccount(acc)}
-                                >
-                                    <span>
-                                        {acc.type} — {acc.number}
-                                    </span>
+                //         <li>
+                //             <hr className="dropdown-divider" />
+                //         </li>
+                //         {accounts.accounts.map((acc: any) => (
+                //             <li key={acc.number}>
+                //                 <button
+                //                     className="dropdown-item d-flex justify-content-between align-items-center"
+                //                     onClick={() => selectAccount(acc)}
+                //                 >
+                //                     <span>
+                //                         {acc.type} — {acc.number}
+                //                     </span>
 
-                                    {acc.isPrimary && (
-                                        <span className="badge bg-success ms-2">
-                                            Primary
-                                        </span>
-                                    )}
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                //                     {acc.isPrimary && (
+                //                         <span className="badge bg-success ms-2">
+                //                             Primary
+                //                         </span>
+                //                     )}
+                //                 </button>
+                //             </li>
+                //         ))}
+                //     </ul>
+                // </div>
             )}
 
-            <Navtabs
+            <AccountsTabs
                 loading={loading}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}

@@ -4,6 +4,8 @@ import About from "./pages/About";
 import Navbar from "./components/Navbar";
 import Accounts from "./pages/Accounts";
 import { AuthProvider } from "./context/AuthContext";
+import Markets from "./pages/Markets";
+import Symbols from "./pages/Symbols";
 
 function App() {
     return (
@@ -14,6 +16,8 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/accounts" element={<Accounts />} />
+                    <Route path="/markets" element={<Markets />} />
+                    <Route path="/symbols" element={<Symbols />} />
                 </Routes>
             </Router>
         </AuthProvider>

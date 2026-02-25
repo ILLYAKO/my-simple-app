@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Activities from "./Activities";
 import Balances from "./Balances";
 import Executions from "./Executions";
@@ -21,7 +20,7 @@ type Props = {
     fetchActivities: () => void;
 };
 
-const Navtabs = ({
+const AccountsTabs = ({
     loading,
     activeTab,
     setActiveTab,
@@ -225,4 +224,4 @@ const Navtabs = ({
     );
 };
 
-export default Navtabs;
+export default AccountsTabs;

@@ -15,7 +15,7 @@ const Home = () => {
 
         if (!code) return;
         const run = async () => {
-            console.log("OAuth code received:", code);
+            // console.log("OAuth code received:", code);
             await exchangeCodeForToken(code);
         };
 
@@ -24,25 +24,25 @@ const Home = () => {
 
     const exchangeCodeForToken = async (code: string) => {
         try {
-            console.log("Home exchangeCodeForToken");
+            // console.log("Home exchangeCodeForToken");
             const response = await api.post("/auth/exchange-token", { code });
             const data = response.data;
-            console.log(
-                "Home exchangeCodeForToken response.data:",
-                response.data,
-            );
-            console.log(
-                "Home exchangeCodeForToken access_token:",
-                data?.access_token,
-            );
-            console.log(
-                "Home exchangeCodeForToken refresh_token:",
-                data?.refresh_token,
-            );
-            console.log(
-                "Home exchangeCodeForToken api_server:",
-                data?.api_server,
-            );
+            // console.log(
+            //     "Home exchangeCodeForToken response.data:",
+            //     response.data,
+            // );
+            // console.log(
+            //     "Home exchangeCodeForToken access_token:",
+            //     data?.access_token,
+            // );
+            // console.log(
+            //     "Home exchangeCodeForToken refresh_token:",
+            //     data?.refresh_token,
+            // );
+            // console.log(
+            //     "Home exchangeCodeForToken api_server:",
+            //     data?.api_server,
+            // );
 
             if (
                 data?.access_token &&
@@ -64,10 +64,12 @@ const Home = () => {
             setError("Failed to exchange code for token");
         }
     };
-    return isAuth ? <h2>"Welcome.1"</h2> : <h2>"Please login."</h2>;
+    return (
+        <div>
+            {isAuth ? <h2>Welcome.</h2> : <h2>Please login.</h2>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
+    );
 };
 
 export default Home;
-function setAccounts(isAuth: any) {
-    throw new Error("Function not implemented.");
-}

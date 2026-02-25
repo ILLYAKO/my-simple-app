@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import LoginButton from "./LoginButton";
-import { useAccounts } from "../context/AccountsContext";
 import { useIsAuth } from "../context/AuthContext";
 
 const Navbar = () => {
     const { isAuth } = useIsAuth();
-    console.log("Navbar isAuth", isAuth);
+    // console.log("Navbar isAuth", isAuth);
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary">
             <div className="container-fluid">
@@ -40,6 +39,16 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className="nav-link" to="/accounts">
                                 Accounts
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/markets">
+                                Markets
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/symbols">
+                                Symbols
                             </Link>
                         </li>
                         <li className="nav-item">
